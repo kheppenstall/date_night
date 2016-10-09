@@ -24,11 +24,4 @@ class NodeTest < Minitest::Test
     assert_equal({"Bill & Ted's Excellent Adventure"=>61}, node.movie)
   end
   
-  def test_greater_score_than?
-    node1 = Node.new(61, "Bill & Ted's Excellent Adventure")
-    node2 = Node.new(92, "Sharknado 3")
-    assert_equal false, node1.greater_score_than?(node2)
-    assert_equal true, node2.greater_score_than?(node1)
-  end
-
 end
