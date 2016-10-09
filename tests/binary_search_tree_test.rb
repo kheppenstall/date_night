@@ -209,7 +209,7 @@ class BinarySearchTreeTest < Minitest::Test
     new_tree.insert(0, "Nacho Libre")
 
     tree.insert_tree(new_tree)
-    
+
     assert tree.include?(0)
     assert tree.include?(97)
     assert tree.include?(50)

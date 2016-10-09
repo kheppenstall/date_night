@@ -204,7 +204,7 @@ attr_reader :root_node,
 
     elsif @right_child != nil
       height += @right_child.height
-      
+
     elsif @left_child != nil
       height += @left_child.height
     end
@@ -214,7 +214,7 @@ attr_reader :root_node,
   end
 
   def insert_tree(tree)
-    if @root_node != nil
+    if tree.root_node != nil
       insert(tree.root_node.score , tree.root_node.title)
     end
     
@@ -227,8 +227,9 @@ attr_reader :root_node,
     end
   end
 
-#NOT GOING TO WORK SINCE WE CAN'T DELETE FROM THE ROOT NODE'
+#NOT GOING TO WORK SINCE WE CAN'T DELETE FROM THE ROOT NODE
   # def delete(score)
+  
   #   if @left_child != nil
   #     if @left_child.root_node.score == score
         
