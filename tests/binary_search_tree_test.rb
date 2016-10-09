@@ -1,5 +1,5 @@
-require './node'
-require './binary_search_tree.rb'
+require './lib/node'
+require './lib/binary_search_tree.rb'
 require "minitest/autorun"
 require "minitest/pride"
 require 'pry'
@@ -145,7 +145,7 @@ class BinarySearchTreeTest < Minitest::Test
 
   def test_load
     tree = BinarySearchTree.new
-    assert_equal 99, tree.load('movies.txt')
+    assert_equal 99, tree.load('./lib/movies.txt')
   end
 
   def test_leaves

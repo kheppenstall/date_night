@@ -1,4 +1,4 @@
-require './node'
+require './lib/node'
 require 'pry'
 
 class BinarySearchTree

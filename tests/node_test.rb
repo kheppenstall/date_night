@@ -1,4 +1,4 @@
-require './node'
+require './lib/node'
 require "minitest/autorun"
 require "minitest/pride"
 require 'pry'
