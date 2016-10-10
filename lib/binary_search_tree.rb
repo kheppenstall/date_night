@@ -121,41 +121,49 @@ attr_reader :root_node,
     return counter
   end
 
-  def recursive_health(depth)
-    tree_health = []
+  def sub_tree_root_scores_and_counts(depth)
+    sub_trees_root_scores_and_counts = []
 
     if depth == 0
-      current_node_count = node_count
+      current_node_count = self.node_count
       score = @root_node.score
 
-      sub_tree_score_and_count_and_count = [score, current_node_count, current_node_count]
-      tree_health << sub_tree_score_and_count_and_count
-      return tree_health
+      sub_trees_root_scores_and_counts << [score, current_node_count]
+      return sub_trees_root_scores_and_counts.flatten
     
     else
       if left_child_exists?
-        tree_health << @left_child.recursive_health(depth - 1)
+        sub_trees_root_scores_and_counts << @left_child.sub_tree_root_scores_and_counts(depth - 1)
       end
 
       if right_child_exists?
-        tree_health << @right_child.recursive_health(depth - 1)
+        sub_trees_root_scores_and_counts << @right_child.sub_tree_root_scores_and_counts(depth - 1)
       end
     end
-    return tree_health
+    return sub_trees_root_scores_and_counts.flatten
   end
 
   def health(depth)
     total_node_count = node_count
-    overall_health = recursive_health(depth).flatten
+    scores_and_counts = sub_tree_root_scores_and_counts(depth)
 
-    overall_health.each_index do |index|
-      if (index + 1) % 3 == 0
-        overall_health[index] = ((overall_health[index].to_f / total_node_count.to_f) * 100).to_i
+    overall_health = []
+
+    scores_and_counts.each_with_index do |item, index|
+      if index.odd?
+        count = item
+        overall_health << count
+        
+        node_percentage = ((count.to_f / total_node_count.to_f) * 100).to_i
+        overall_health << node_percentage
+
+      else
+        score = item
+        overall_health << score
       end
     end
 
-    overall_health = overall_health.each_slice(3).to_a
-    return overall_health
+    overall_health.each_slice(3).to_a
   end
 
   def load(filename)
@@ -197,7 +205,7 @@ attr_reader :root_node,
 
     elsif !right_child_exists?
       number_of_leaves += @left_child.leaves
-      
+
     elsif !left_child_exists?
       number_of_leaves += @right_child.leaves
     end
@@ -229,48 +237,33 @@ attr_reader :root_node,
   def insert_tree(tree)
     if tree.root_exists?
       insert(tree.root_node.score , tree.root_node.title)
-    end
-    
-    if tree.right_child_exists?
-      insert_tree(tree.right_child)
-    end
-    
-    if tree.left_child_exists?
-      insert_tree(tree.left_child)
+      insert_tree(tree.right_child) if tree.right_child_exists?
+      insert_tree(tree.left_child) if tree.left_child_exists?
     end
   end
 
-#NOT GOING TO WORK SINCE WE CAN'T DELETE FROM THE ROOT NODE
-  # def delete(score)
-  
-  #   if @left_child != nil
-  #     if @left_child.root_node.score == score
-        
-  #       insert_tree(@left_child.left_child)
-  #       insert_tree(@left_child.right_child)
+  def delete(score)
+    if @root_node.score == score
+      @root_node = nil
 
-  #       @left_child = nil
+      if right_child_exists?
+        temp_right_child = @right_child
+        @right_child = nil
+        insert_tree(temp_right_child)
+      end
+      if left_child_exists?
+        temp_left_child = @left_child
+        @left_child = nil
+        insert_tree(temp_left_child)
+      end
+      
+    elsif score > root_node.score
+      @right_child.delete(score)
 
-  #     else
-  #       @left_child.delete(score)
-  #     end
-  #   end
-
-  #   if @right_child != nil
-  #    if @right_child.root_node.score == score
-        
-  #       insert_tree(@right_child.left_child)
-  #       insert_tree(@right_child.right_child)
-
-  #       @right_child = nil
-        
-  #     else
-  #       @right_child.delete(score)
-  #     end
-  #   end
-  # end
-
-  
+    elsif score < root_node.score
+      @left_child.delete(score)
+    end
+  end
 
 end
 

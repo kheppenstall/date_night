@@ -162,13 +162,13 @@ class BinarySearchTreeTest < Minitest::Test
   end
 
 
-  def test_it_counds_node_when_there_is_one
+  def test_it_counts_node_when_there_is_one
     tree = BinarySearchTree.new
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     assert_equal 1, tree.node_count
   end
 
-  def test_it_counds_node_when_there_are_multiple
+  def test_it_counts_node_when_there_are_multiple
     tree = BinarySearchTree.new
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     tree.insert(16, "Johnny English")
@@ -325,25 +325,75 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal 8 , tree.node_count
   end
 
-  # def test_delete
-  #   tree = BinarySearchTree.new
-  #   tree.insert(61, "Bill & Ted's Excellent Adventure")
-  #   tree.insert(16, "Johnny English")
-  #   tree.insert(92, "Sharknado 3")
-  #   tree.insert(50, "The Departed")
-  #   tree.insert(41, "The Revenant")
-  #   tree.insert(99, "Alien vs. Predator")
-  #   tree.insert(97, "Meru")
-  #   tree.insert(0, "Nacho Libre")
+  def test_it_deletes_the_root_node_when_there_is_one_movie
+    tree = BinarySearchTree.new
+    tree.insert(61, "Bill & Ted's Excellent Adventure")
+    tree.delete(61)
 
-  #   tree.delete(16)
+    refute tree.include?(61)
+  end
 
-  #   assert_equal false, tree.include?(16)
-  #   assert tree.include?(0)
-  #   assert tree.include?(41)
-  #   assert_equal 7, tree.node_count
-  # end
+  def test_it_deletes_a_child_when_there_are_two_nodes
+    tree = BinarySearchTree.new
+    tree.insert(61, "Bill & Ted's Excellent Adventure")
+    tree.insert(16, "Johnny English")
+    tree.delete(16)
 
+    refute tree.include?(16)
+  end
+
+  def test_it_deletes_a_child_when_there_are_two_nodes_but_keeps_root
+    tree = BinarySearchTree.new
+    tree.insert(61, "Bill & Ted's Excellent Adventure")
+    tree.insert(16, "Johnny English")
+    tree.delete(16)
+
+    refute tree.include?(16)
+    assert tree.include?(61)
+  end
+
+  def test_it_deletes_a_root_node_when_there_are_two_nodes_but_keeps_child
+
+    tree = BinarySearchTree.new
+    tree.insert(61, "Bill & Ted's Excellent Adventure")
+    tree.insert(16, "Johnny English")
+    tree.delete(61)
+
+    assert tree.include?(16)
+    refute tree.include?(61)
+  end
+
+  def test_it_deletes_a_node_and_reinserts_its_child_when_there_are_three_nodes
+    tree = BinarySearchTree.new
+    tree.insert(41, "The Revenant")
+    tree.insert(99, "Alien vs. Predator")
+    tree.insert(97, "Meru")
+
+    tree.delete(97)
+
+    assert tree.include?(99)
+    refute tree.include?(97)
+  end
+
+  def test_it_deletes_a_node_and_reinserts_all_its_children
+    tree = BinarySearchTree.new
+    tree.insert(61, "Bill & Ted's Excellent Adventure")
+    tree.insert(16, "Johnny English")
+    tree.insert(92, "Sharknado 3")
+    tree.insert(50, "The Departed")
+    tree.insert(41, "The Revenant")
+    tree.insert(99, "Alien vs. Predator")
+    tree.insert(97, "Meru")
+    tree.insert(0, "Nacho Libre")
+
+    tree.delete(16)
+
+    refute tree.include?(16)
+    assert tree.include?(50)
+    assert tree.include?(41)
+    assert tree.include?(0)
+    assert tree.include?(97)
+  end
 
 
 end
