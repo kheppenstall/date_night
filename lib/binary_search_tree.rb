@@ -161,11 +161,9 @@ attr_reader :root_node,
   def load(filename)
     lines = File.readlines(filename)
     
-    lines_no_breaks = lines.map do |line|
-      line.delete("\n")
-    end
+    lines_no_breaks = lines.map {|line| line.delete("\n")}
     
-    lines_as_arrays = lines_no_breaks.map do |line|
+    lines_as_arrays = lines_no_breaks.map do |line| 
       line.split(', ')
     end
 
@@ -176,7 +174,6 @@ attr_reader :root_node,
     end
 
     counter = 0
-
     scores_and_titles.each do |score_and_title|
       score = score_and_title[0]
       title = score_and_title[1]
@@ -194,10 +191,13 @@ attr_reader :root_node,
 
     if left_child_exists? && right_child_exists?
       number_of_leaves += @left_child.leaves + @right_child.leaves
+
     elsif !left_child_exists? && !right_child_exists?
       number_of_leaves += 1
+
     elsif !right_child_exists?
       number_of_leaves += @left_child.leaves
+      
     elsif !left_child_exists?
       number_of_leaves += @right_child.leaves
     end
