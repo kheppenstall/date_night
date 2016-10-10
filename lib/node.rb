@@ -3,13 +3,15 @@ require 'pry'
 class Node
 
   attr_reader :score,
-              :title,
-              :movie
+              :title
 
   def initialize(score, title)
     @score = score
     @title = title
-    @movie = {title => score}
+  end
+
+  def title_and_score
+    {@title => @score}
   end
 
 end

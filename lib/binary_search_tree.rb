@@ -12,38 +12,51 @@ attr_reader :root_node,
     @left_child = nil
     @right_child = nil
   end
-  
+
+  def root_exists?
+    @root_node != nil
+  end
+
+  def left_child_exists?
+    @left_child != nil
+  end
+
+  def right_child_exists?
+    @right_child != nil
+  end
+
   def insert(score, title)
 
-    if @root_node == nil
+    if !root_exists?
       @root_node = Node.new(score, title)
     
     elsif score >= @root_node.score
-      if @right_child == nil
+      if !right_child_exists?
         @right_child = BinarySearchTree.new
       end
       @right_child.insert(score, title)
 
     elsif score < @root_node.score
-      if @left_child == nil
+      if !left_child_exists?
         @left_child = BinarySearchTree.new
       end
       @left_child.insert(score, title)
     end
   end
 
+  
   def include?(score)
-    if @root_node == nil
+    if !root_exists?
       return false
     end
 
     if score == @root_node.score
       return true
     elsif score > @root_node.score
-      return false if @right_child == nil
+      return false if !right_child_exists?
       @right_child.include?(score)
     elsif score < @root_node.score
-      return false if @left_child == nil
+      return false if !left_child_exists?
       @left_child.include?(score)
     end
   end
@@ -60,16 +73,16 @@ attr_reader :root_node,
   end
   
   def max
-    if @right_child == nil
-      return @root_node.movie
+    if !right_child_exists?
+      return @root_node.title_and_score
     else
       return @right_child.max
     end
   end
 
   def min
-    if @left_child == nil
-      return @root_node.movie
+    if !left_child_exists?
+      return @root_node.title_and_score
     else
       return @left_child.min
     end
@@ -77,13 +90,13 @@ attr_reader :root_node,
 
   def sort
     sorted_movies = []
-    sorted_movies << root_node.movie
+    sorted_movies << root_node.title_and_score
 
-    if @left_child != nil 
+    if left_child_exists? 
       sorted_movies.unshift(@left_child.sort)
     end
 
-    if @right_child != nil 
+    if right_child_exists?
       sorted_movies << @right_child.sort
     end
     
@@ -93,15 +106,15 @@ attr_reader :root_node,
   def node_count
     counter = 0
 
-    if @root_node != nil
+    if root_exists?
       counter = 1
     end
 
-    if @left_child != nil
+    if left_child_exists?
       counter += @left_child.node_count
     end
 
-    if @right_child != nil
+    if right_child_exists?
       counter += @right_child.node_count
     end
 
@@ -120,11 +133,11 @@ attr_reader :root_node,
       return tree_health
     
     else
-      if @left_child != nil
+      if left_child_exists?
         tree_health << @left_child.recursive_health(depth - 1)
       end
 
-      if @right_child != nil
+      if right_child_exists?
         tree_health << @right_child.recursive_health(depth - 1)
       end
     end
@@ -179,13 +192,13 @@ attr_reader :root_node,
   def leaves
     number_of_leaves = 0
 
-    if @left_child != nil && @right_child != nil
+    if left_child_exists? && right_child_exists?
       number_of_leaves += @left_child.leaves + @right_child.leaves
-    elsif @left_child == nil && @right_child == nil
+    elsif !left_child_exists? && !right_child_exists?
       number_of_leaves += 1
-    elsif @right_child == nil
+    elsif !right_child_exists?
       number_of_leaves += @left_child.leaves
-    elsif @left_child == nil
+    elsif !left_child_exists?
       number_of_leaves += @right_child.leaves
     end
 
@@ -194,7 +207,7 @@ attr_reader :root_node,
 
   def height
     height = 1
-    if @right_child != nil && @left_child != nil
+    if right_child_exists? && left_child_exists?
       
       if @right_child.height > @left_child.height
         height += @right_child.height
@@ -202,10 +215,10 @@ attr_reader :root_node,
         height += @left_child.height
       end
 
-    elsif @right_child != nil
+    elsif right_child_exists?
       height += @right_child.height
 
-    elsif @left_child != nil
+    elsif left_child_exists?
       height += @left_child.height
     end
 
@@ -214,15 +227,15 @@ attr_reader :root_node,
   end
 
   def insert_tree(tree)
-    if tree.root_node != nil
+    if tree.root_exists?
       insert(tree.root_node.score , tree.root_node.title)
     end
     
-    if tree.right_child != nil
+    if tree.right_child_exists?
       insert_tree(tree.right_child)
     end
     
-    if tree.left_child != nil
+    if tree.left_child_exists?
       insert_tree(tree.left_child)
     end
   end
