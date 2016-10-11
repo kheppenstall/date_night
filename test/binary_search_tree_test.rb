@@ -394,6 +394,4 @@ class BinarySearchTreeTest < Minitest::Test
     assert tree.include?(0)
     assert tree.include?(97)
   end
-
-
 end

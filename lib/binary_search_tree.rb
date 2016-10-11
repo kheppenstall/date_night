@@ -25,18 +25,26 @@ attr_reader :root_node,
     @right_child != nil
   end
 
+  def move_right?(score)
+    score > @root_node.score
+  end
+
+  def move_left?(score)
+    score < @root_node.score
+  end
+
   def insert(score, title)
 
     if !root_exists?
       @root_node = Node.new(score, title)
     
-    elsif score >= @root_node.score
+    elsif move_right?(score)
       if !right_child_exists?
         @right_child = BinarySearchTree.new
       end
       @right_child.insert(score, title)
 
-    elsif score < @root_node.score
+    elsif move_left?(score)
       if !left_child_exists?
         @left_child = BinarySearchTree.new
       end
@@ -52,10 +60,10 @@ attr_reader :root_node,
 
     if score == @root_node.score
       return true
-    elsif score > @root_node.score
+    elsif move_right?(score)
       return false if !right_child_exists?
       @right_child.include?(score)
-    elsif score < @root_node.score
+    elsif move_left?(score)
       return false if !left_child_exists?
       @left_child.include?(score)
     end
@@ -65,9 +73,9 @@ attr_reader :root_node,
     depth = 0
     if score == @root_node.score
       return depth
-    elsif score > @root_node.score
+    elsif move_right?(score)
       depth += (1 + @right_child.depth_of(score))
-    elsif score < @root_node.score
+    elsif move_left?(score)
       depth += (1 + @left_child.depth_of(score))
     end
   end
@@ -257,10 +265,10 @@ attr_reader :root_node,
         insert_tree(temp_left_child)
       end
       
-    elsif score > root_node.score
+    elsif move_right?(score)
       @right_child.delete(score)
 
-    elsif score < root_node.score
+    elsif move_left?(score)
       @left_child.delete(score)
     end
   end
