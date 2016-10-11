@@ -3,34 +3,28 @@ require 'pry'
 
 class BinarySearchTree
 
-attr_reader :root_node,
-            :left_child,
-            :right_child,
-  
-  def initialize
-    @root_node = nil
-    @left_child = nil
-    @right_child = nil
-  end
+  attr_accessor :root_node,
+                :left_child,
+                :right_child
 
   def root_exists?
-    @root_node != nil
+    root_node != nil
   end
 
   def left_child_exists?
-    @left_child != nil
+    left_child != nil
   end
 
   def right_child_exists?
-    @right_child != nil
+    right_child != nil
   end
 
   def move_right?(score)
-    score > @root_node.score
+    score > root_node.score
   end
 
   def move_left?(score)
-    score < @root_node.score
+    score < root_node.score
   end
 
   def insert(score, title)
@@ -39,62 +33,64 @@ attr_reader :root_node,
       @root_node = Node.new(score, title)
     
     elsif move_right?(score)
-      if !right_child_exists?
-        @right_child = BinarySearchTree.new
-      end
-      @right_child.insert(score, title)
+      create_right_child
+      right_child.insert(score, title)
 
     elsif move_left?(score)
-      if !left_child_exists?
-        @left_child = BinarySearchTree.new
-      end
-      @left_child.insert(score, title)
+      create_left_child
+      left_child.insert(score, title)
     end
 
-    return depth_of(score)
+    depth_of(score)
   end
 
+  def create_right_child
+    if !right_child_exists?
+        @right_child = BinarySearchTree.new
+    end
+  end
+
+  def create_left_child
+    if !left_child_exists?
+        @left_child = BinarySearchTree.new
+    end
+  end
   
   def include?(score)
-    if !root_exists?
-      return false
-    end
-
-    if score == @root_node.score
-      return true
-    elsif move_right?(score)
-      return false if !right_child_exists?
-      @right_child.include?(score)
-    elsif move_left?(score)
-      return false if !left_child_exists?
-      @left_child.include?(score)
+    if root_exists?
+      if score == root_node.score
+         true
+      elsif move_right?(score)
+        right_child.include?(score) if right_child_exists?
+      elsif move_left?(score)
+        left_child.include?(score) if left_child_exists?
+      end
     end
   end
   
   def depth_of(score)
     depth = 0
-    if score == @root_node.score
-      return depth
-    elsif move_right?(score)
-      depth += (1 + @right_child.depth_of(score))
+    if move_right?(score)
+      depth += 1 + right_child.depth_of(score)
     elsif move_left?(score)
-      depth += (1 + @left_child.depth_of(score))
+      depth += 1 + left_child.depth_of(score)
     end
+    depth
   end
   
   def max
-    if !right_child_exists?
-      return @root_node.title_and_score
+    if right_child_exists?
+      right_child.max
     else
-      return @right_child.max
+      root_node.title_and_score
     end
   end
 
   def min
-    if !left_child_exists?
-      return @root_node.title_and_score
+    if left_child_exists?
+      left_child.min
     else
-      return @left_child.min
+      root_node.title_and_score
     end
   end
 
@@ -103,54 +99,53 @@ attr_reader :root_node,
     sorted_movies << root_node.title_and_score
 
     if left_child_exists? 
-      sorted_movies.unshift(@left_child.sort)
+      sorted_movies.unshift left_child.sort
     end
 
     if right_child_exists?
-      sorted_movies << @right_child.sort
+      sorted_movies << right_child.sort
     end
     
-    return sorted_movies.flatten
+    sorted_movies.flatten
   end
 
   def node_count
-    counter = 0
-
     if root_exists?
       counter = 1
+    else
+      counter = 0
     end
 
     if left_child_exists?
-      counter += @left_child.node_count
+      counter += left_child.node_count
     end
 
     if right_child_exists?
-      counter += @right_child.node_count
+      counter += right_child.node_count
     end
 
-    return counter
+    counter
   end
 
   def sub_tree_root_scores_and_counts(depth)
     sub_trees_root_scores_and_counts = []
 
     if depth == 0
-      current_node_count = self.node_count
-      score = @root_node.score
+      current_node_count = node_count
+      score = root_node.score
 
       sub_trees_root_scores_and_counts << [score, current_node_count]
-      return sub_trees_root_scores_and_counts.flatten
-    
+      
     else
       if left_child_exists?
-        sub_trees_root_scores_and_counts << @left_child.sub_tree_root_scores_and_counts(depth - 1)
+        sub_trees_root_scores_and_counts << left_child.sub_tree_root_scores_and_counts(depth - 1)
       end
 
       if right_child_exists?
-        sub_trees_root_scores_and_counts << @right_child.sub_tree_root_scores_and_counts(depth - 1)
+        sub_trees_root_scores_and_counts << right_child.sub_tree_root_scores_and_counts(depth - 1)
       end
     end
-    return sub_trees_root_scores_and_counts.flatten
+    sub_trees_root_scores_and_counts.flatten
   end
 
   def health(depth)
@@ -201,47 +196,46 @@ attr_reader :root_node,
         counter += 1
       end
     end
-    return counter
+    counter
   end
 
   def leaves
     number_of_leaves = 0
 
     if left_child_exists? && right_child_exists?
-      number_of_leaves += @left_child.leaves + @right_child.leaves
+      number_of_leaves += left_child.leaves + right_child.leaves
 
     elsif !left_child_exists? && !right_child_exists?
       number_of_leaves += 1
 
     elsif !right_child_exists?
-      number_of_leaves += @left_child.leaves
+      number_of_leaves += left_child.leaves
 
     elsif !left_child_exists?
-      number_of_leaves += @right_child.leaves
+      number_of_leaves += right_child.leaves
     end
 
-    return number_of_leaves
+    number_of_leaves
   end
 
   def height
     height = 1
     if right_child_exists? && left_child_exists?
       
-      if @right_child.height > @left_child.height
-        height += @right_child.height
+      if right_child.height > left_child.height
+        height += right_child.height
       else
-        height += @left_child.height
+        height += left_child.height
       end
 
     elsif right_child_exists?
-      height += @right_child.height
+      height += right_child.height
 
     elsif left_child_exists?
-      height += @left_child.height
+      height += left_child.height
     end
 
-    return height
-
+    height
   end
 
   def insert_tree(tree)
@@ -253,25 +247,25 @@ attr_reader :root_node,
   end
 
   def delete(score)
-    if @root_node.score == score
+    if root_node.score == score
       @root_node = nil
 
       if right_child_exists?
-        temp_right_child = @right_child
+        temp_right_child = right_child
         @right_child = nil
         insert_tree(temp_right_child)
       end
       if left_child_exists?
-        temp_left_child = @left_child
+        temp_left_child = left_child
         @left_child = nil
         insert_tree(temp_left_child)
       end
       
     elsif move_right?(score)
-      @right_child.delete(score)
+      right_child.delete(score)
 
     elsif move_left?(score)
-      @left_child.delete(score)
+      left_child.delete(score)
     end
   end
 
