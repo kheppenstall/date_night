@@ -1,5 +1,5 @@
-require './lib/node'
-require './lib/binary_search_tree.rb'
+require_relative '../lib/node'
+require_relative '../lib/binary_search_tree.rb'
 require "minitest/autorun"
 require "minitest/pride"
 require 'pry'
@@ -11,12 +11,18 @@ class BinarySearchTreeTest < Minitest::Test
     refute tree.root_node
   end
 
-  def test_it_inserts_one_node
+  def test_it_inserts_one_node_with_correct_class
     tree = BinarySearchTree.new
     tree.insert(61, "Bill & Ted's Excellent Adventure")
 
     assert_equal Node, tree.root_node.class
-    assert_equal "Bill & Ted's Excellent Adventure", tree.root_node.title
+  end
+
+  def test_it_inserts_one_node_and_returns_depth
+    tree = BinarySearchTree.new
+    result = tree.insert(61, "Bill & Ted's Excellent Adventure")
+
+    assert_equal 0, result
   end
 
   def test_it_inserts_one_node_and_knows_its_title
@@ -43,6 +49,13 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     tree.insert(92, "Sharknado 3")
     assert_equal 92, tree.right_child.root_node.score
+  end
+
+  def test_it_returns_depth_when_inserting_at_depth_1
+    tree = BinarySearchTree.new
+    tree.insert(61, "Bill & Ted's Excellent Adventure")
+    result = tree.insert(92, "Sharknado 3")
+    assert_equal 1, result
   end
 
   def test_it_knows_it_includes_a_score
@@ -233,7 +246,7 @@ class BinarySearchTreeTest < Minitest::Test
     assert tree.load('./lib/movies.txt')
   end
 
-  def test_it_loads_a_file_and_returns_number_of_movies_loaded
+  def test_it_loads_a_file_and_returns_number_of_movies_inserted
     tree = BinarySearchTree.new
     assert_equal 99, tree.load('./lib/movies.txt')
   end

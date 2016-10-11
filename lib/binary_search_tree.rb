@@ -1,4 +1,4 @@
-require './lib/node'
+require_relative 'node'
 require 'pry'
 
 class BinarySearchTree
@@ -50,6 +50,8 @@ attr_reader :root_node,
       end
       @left_child.insert(score, title)
     end
+
+    return depth_of(score)
   end
 
   
@@ -181,6 +183,7 @@ attr_reader :root_node,
     
     lines_as_arrays = lines_no_breaks.map do |line| 
       line.split(', ')
+      # TRUNCATING MOVIES WITH COMMAS IN TITLE
     end
 
     scores_and_titles = lines_as_arrays.map do |score_and_title|
@@ -198,7 +201,6 @@ attr_reader :root_node,
         counter += 1
       end
     end
-
     return counter
   end
 
