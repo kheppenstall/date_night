@@ -5,22 +5,22 @@ require 'pry'
 
 class NodeTest < Minitest::Test
 
-  def test_score
+  def test_it_knows_its_score
     node = Node.new(61, "Bill & Ted's Excellent Adventure")
     assert_equal 61, node.score
   end
 
-  def test_different_score
+  def test_it_knows_a_different_score
     node = Node.new(88, "Rocky")
     assert_equal 88, node.score
   end
 
-  def test_title
+  def test_it_knows_its_title
     node = Node.new(61, "Bill & Ted's Excellent Adventure")
     assert_equal "Bill & Ted's Excellent Adventure", node.title
   end
 
-  def test_different_title
+  def test_it_knows_a_different_title
     node = Node.new(88, "Rocky")
     assert_equal "Rocky", node.title
   end
