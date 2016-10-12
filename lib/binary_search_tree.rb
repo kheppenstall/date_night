@@ -131,7 +131,7 @@ class BinarySearchTree
   end
 
   def percentage(count, total_node_count)
-    ((count.to_f / total_node_count.to_f) * 100).to_i
+    ((count / total_node_count.to_f) * 100).to_i
   end
 
   def load_health(item, index, overall_health, total_node_count)
