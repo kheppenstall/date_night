@@ -2,7 +2,7 @@ require_relative 'node'
 
 class BinarySearchTree
 
-  attr_accessor :root_node,
+  attr_reader   :root_node,
                 :left_child,
                 :right_child
 
@@ -104,61 +104,74 @@ class BinarySearchTree
     sorted_movies.flatten
   end
 
-  def node_count
-    if root_exists?
-      counter = 1
+  def set_node_counter
+    if root_exists? 
+      1
     else
-      counter = 0
-    end
+      0
+    end 
+  end
 
+  def node_count
+    counter = set_node_counter
     counter += left_child.node_count if left_child_exists?
     counter += right_child.node_count if right_child_exists?
-
     counter
   end
 
-  def sub_tree_root_scores_and_counts(depth)
-    sub_trees_root_scores_and_counts = []
+  def one_score_and_count
+    current_node_count = node_count
+    score = root_node.score
+    [score, current_node_count]
+  end
 
-    if depth == 0
-      current_node_count = node_count
-      score = root_node.score
+  def scores_and_counts(depth)
+    scores_and_counts = []
 
-      sub_trees_root_scores_and_counts << [score, current_node_count]
+    scores_and_counts << one_score_and_count if depth == 0
       
-    else
-      if left_child_exists?
-        sub_trees_root_scores_and_counts << left_child.sub_tree_root_scores_and_counts(depth - 1)
-      end
-
-      if right_child_exists?
-        sub_trees_root_scores_and_counts << right_child.sub_tree_root_scores_and_counts(depth - 1)
-      end
+    if left_child_exists?
+      scores_and_counts << left_child.scores_and_counts(depth - 1)
     end
-    sub_trees_root_scores_and_counts.flatten
+
+    if right_child_exists?
+        scores_and_counts << right_child.scores_and_counts(depth - 1)
+    end
+      
+    scores_and_counts.flatten
+  end
+
+  def percentage(count, total_node_count)
+    ((count.to_f / total_node_count.to_f) * 100).to_i
+  end
+
+  def load_health(item, index, overall_health, total_node_count)
+    if index.odd?
+      count = item
+      overall_health << count
+  
+      node_percentage = percentage(count, total_node_count)
+      overall_health << node_percentage
+
+    else
+      score = item
+      overall_health << score
+    end
+  end
+
+  def create_health_array(scores_and_counts, total_node_count)
+    overall_health = []
+    scores_and_counts.each_with_index do |item, index|
+      load_health(item, index, overall_health, total_node_count)
+    end
+    overall_health
   end
 
   def health(depth)
     total_node_count = node_count
-    scores_and_counts = sub_tree_root_scores_and_counts(depth)
-
-    overall_health = []
-
-    scores_and_counts.each_with_index do |item, index|
-      if index.odd?
-        count = item
-        overall_health << count
-        
-        node_percentage = ((count.to_f / total_node_count.to_f) * 100).to_i
-        overall_health << node_percentage
-
-      else
-        score = item
-        overall_health << score
-      end
-    end
-
-    overall_health.each_slice(3).to_a
+    scores_and_counts = scores_and_counts(depth)
+    tree_health = create_health_array(scores_and_counts, total_node_count)
+    tree_health.each_slice(3).to_a
   end
 
   def load(filename)
@@ -222,10 +235,8 @@ class BinarySearchTree
     
     if right_child_exists? && left_child_exists?
       height += height_of_bigger_branch
-
     elsif right_child_exists?
       height += right_child.height
-
     elsif left_child_exists?
       height += left_child.height
     end
@@ -249,12 +260,8 @@ class BinarySearchTree
     end
   end
 
-  def delete(score)
-    if move_right?(score)
-      right_child.delete(score)
-    elsif move_left?(score)
-      left_child.delete(score)
-    elsif root_node.score == score
+  def delete_node(score)
+    if root_node.score == score
       @root_node = nil
       reinsert_right_tree
       reinsert_left_tree
@@ -275,6 +282,12 @@ class BinarySearchTree
       @left_child = nil
       insert_tree(temp_left_child)
     end
+  end
+
+  def delete(score)
+    right_child.delete(score) if move_right?(score)
+    left_child.delete(score)if move_left?(score)
+    delete_node(score)
   end
 
 end
