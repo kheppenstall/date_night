@@ -242,12 +242,12 @@ class BinarySearchTreeTest < Minitest::Test
 
   def test_it_loads_a_file
     tree = BinarySearchTree.new
-    assert tree.load('./lib/movies.txt')
+    assert tree.load('./test/movies.txt')
   end
 
   def test_it_loads_a_file_and_returns_number_of_movies_inserted
     tree = BinarySearchTree.new
-    assert_equal 99, tree.load('./lib/movies.txt')
+    assert_equal 99, tree.load('./test/movies.txt')
   end
 
   def test_it_counts_leaves_with_one_node
