@@ -45,7 +45,7 @@ class BinarySearchTree
   end
 
   def insert(score, title)
-    if !(root_exists?)
+    if !root_exists?
       @root_node = Node.new(score, title)
     else 
       insert_right(score, title) if move_right?(score)
@@ -109,7 +109,7 @@ class BinarySearchTree
       1
     else
       0
-    end 
+    end
   end
 
   def node_count
@@ -125,19 +125,23 @@ class BinarySearchTree
     [score, current_node_count]
   end
 
-  def scores_and_counts(depth)
-    scores_and_counts = []
+  def children_scores_and_counts(depth)
+    children = []
 
-    scores_and_counts << one_score_and_count if depth == 0
-      
     if left_child_exists?
-      scores_and_counts << left_child.scores_and_counts(depth - 1)
+      children << left_child.scores_and_counts(depth - 1)
     end
 
     if right_child_exists?
-        scores_and_counts << right_child.scores_and_counts(depth - 1)
+        children << right_child.scores_and_counts(depth - 1)
     end
+    children
+  end
       
+  def scores_and_counts(depth)
+    scores_and_counts = []
+    scores_and_counts << one_score_and_count if depth == 0
+    scores_and_counts << children_scores_and_counts(depth)
     scores_and_counts.flatten
   end
 
@@ -174,44 +178,39 @@ class BinarySearchTree
     tree_health.each_slice(3).to_a
   end
 
+  def get_scores(lines)
+    lines.map do |line|
+      line.scan(/(\d+),/i)[0][0].to_i
+    end
+  end
+
+  def get_titles(lines)
+    lines.map do |line|
+      line.scan(/,\s(.+)/i)[0]
+    end
+  end
+
+  def insert_arrays(scores, titles)
+    titles.each_index do |index|
+      insert(scores[index], titles[index])
+    end
+  end
+
   def load(filename)
     lines = File.readlines(filename)
-    
-    lines_no_breaks = lines.map {|line| line.delete("\n")}
-    
-    lines_as_arrays = lines_no_breaks.map do |line| 
-      line.split(', ')
-      # TRUNCATING MOVIES WITH COMMAS IN TITLE
-    end
-
-    scores_and_titles = lines_as_arrays.map do |score_and_title|
-      score = score_and_title[0].to_i
-      title = score_and_title[1]
-      [score, title]
-    end
-
-    counter = 0
-    scores_and_titles.each do |score_and_title|
-      score = score_and_title[0]
-      title = score_and_title[1]
-      unless include?(score)
-        insert(score, title)
-        counter += 1
-      end
-    end
-    counter
+    scores = get_scores(lines)
+    titles = get_titles(lines)
+    insert_arrays(scores, titles)
+    movies_inserted = scores.length
   end
 
   def leaves
     number_of_leaves = 0
-
     number_of_leaves += left_leaves
     number_of_leaves += right_leaves
-
     if !left_child_exists? && !right_child_exists?
       number_of_leaves += 1
     end
-
     number_of_leaves
   end
 
@@ -230,9 +229,16 @@ class BinarySearchTree
     end
   end
   
+  def height_of_bigger_branch
+    if right_child.height > left_child.height
+      right_child.height
+    else
+      left_child.height
+    end
+  end
+
   def height
     height = 1
-    
     if right_child_exists? && left_child_exists?
       height += height_of_bigger_branch
     elsif right_child_exists?
@@ -240,16 +246,7 @@ class BinarySearchTree
     elsif left_child_exists?
       height += left_child.height
     end
-    
     height
-  end
-
-  def height_of_bigger_branch
-    if right_child.height > left_child.height
-      right_child.height
-    else
-      left_child.height
-    end
   end
 
   def insert_tree(tree)
@@ -291,4 +288,3 @@ class BinarySearchTree
   end
 
 end
-
