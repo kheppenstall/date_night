@@ -11,5 +11,4 @@ class Node
   def title_and_score
     {@title => @score}
   end
-
 end

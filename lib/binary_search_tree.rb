@@ -97,7 +97,7 @@ class BinarySearchTree
   def sort
     sorted_movies = []
     sorted_movies << root_node.title_and_score
-     
+  
     sorted_movies.unshift left_child.sort if left_child_exists?
     sorted_movies << right_child.sort if right_child_exists?
          
@@ -107,8 +107,7 @@ class BinarySearchTree
   def set_node_counter
     if root_exists? 
       1
-    else
-      0
+    else 0
     end
   end
 
@@ -119,28 +118,16 @@ class BinarySearchTree
     counter
   end
 
-  def one_score_and_count
-    current_node_count = node_count
-    score = root_node.score
-    [score, current_node_count]
-  end
-
   def children_scores_and_counts(depth)
     children = []
-
-    if left_child_exists?
-      children << left_child.scores_and_counts(depth - 1)
-    end
-
-    if right_child_exists?
-        children << right_child.scores_and_counts(depth - 1)
-    end
+    children << left_child.scores_and_counts(depth - 1) if left_child_exists?
+    children << right_child.scores_and_counts(depth - 1) if right_child_exists?
     children
   end
       
   def scores_and_counts(depth)
     scores_and_counts = []
-    scores_and_counts << one_score_and_count if depth == 0
+    scores_and_counts << [root_node.score, node_count] if depth == 0
     scores_and_counts << children_scores_and_counts(depth)
     scores_and_counts.flatten
   end
@@ -153,10 +140,8 @@ class BinarySearchTree
     if index.odd?
       count = item
       overall_health << count
-  
       node_percentage = percentage(count, total_node_count)
       overall_health << node_percentage
-
     else
       score = item
       overall_health << score
@@ -220,7 +205,6 @@ class BinarySearchTree
     else 0
     end
   end
-
 
   def right_leaves
     if right_child_exists?
