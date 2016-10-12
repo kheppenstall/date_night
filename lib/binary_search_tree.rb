@@ -27,15 +27,11 @@ class BinarySearchTree
   end
 
   def create_right_child
-    if !right_child_exists?
-        @right_child = BinarySearchTree.new
-    end
+    @right_child = BinarySearchTree.new if !right_child_exists?
   end
 
   def create_left_child
-    if !left_child_exists?
-        @left_child = BinarySearchTree.new
-    end
+    @left_child = BinarySearchTree.new if !left_child_exists?
   end
 
   def insert_right(score, title)
@@ -69,9 +65,7 @@ class BinarySearchTree
   end
 
   def include?(score)
-    if root_exists?
-      find_in_tree?(score)
-    end
+    find_in_tree?(score) if root_exists?
   end
   
   def depth_of(score)
@@ -103,15 +97,10 @@ class BinarySearchTree
   def sort
     sorted_movies = []
     sorted_movies << root_node.title_and_score
-
-    if left_child_exists? 
-      sorted_movies.unshift left_child.sort
-    end
-
-    if right_child_exists?
-      sorted_movies << right_child.sort
-    end
-    
+     
+    sorted_movies.unshift left_child.sort if left_child_exists?
+    sorted_movies << right_child.sort if right_child_exists?
+         
     sorted_movies.flatten
   end
 
@@ -122,13 +111,8 @@ class BinarySearchTree
       counter = 0
     end
 
-    if left_child_exists?
-      counter += left_child.node_count
-    end
-
-    if right_child_exists?
-      counter += right_child.node_count
-    end
+    counter += left_child.node_count if left_child_exists?
+    counter += right_child.node_count if right_child_exists?
 
     counter
   end
@@ -245,6 +229,7 @@ class BinarySearchTree
     elsif left_child_exists?
       height += left_child.height
     end
+    
     height
   end
 
