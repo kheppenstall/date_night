@@ -1,5 +1,4 @@
 require_relative 'node'
-require 'pry'
 
 class BinarySearchTree
 
@@ -27,23 +26,6 @@ class BinarySearchTree
     score < root_node.score
   end
 
-  def insert(score, title)
-
-    if !root_exists?
-      @root_node = Node.new(score, title)
-    
-    elsif move_right?(score)
-      create_right_child
-      right_child.insert(score, title)
-
-    elsif move_left?(score)
-      create_left_child
-      left_child.insert(score, title)
-    end
-
-    depth_of(score)
-  end
-
   def create_right_child
     if !right_child_exists?
         @right_child = BinarySearchTree.new
@@ -55,16 +37,40 @@ class BinarySearchTree
         @left_child = BinarySearchTree.new
     end
   end
+
+  def insert_right(score, title)
+    create_right_child
+    right_child.insert(score, title)
+  end
+
+  def insert_left(score, title)
+    create_left_child
+    left_child.insert(score, title)
+  end
+
+  def insert(score, title)
+    if !(root_exists?)
+      @root_node = Node.new(score, title)
+    else 
+      insert_right(score, title) if move_right?(score)
+      insert_left(score, title) if move_left?(score)
+    end
+    depth_of(score)
+  end
   
+  def find_in_tree?(score)
+    if score == root_node.score
+      true
+    elsif move_right?(score)
+      right_child.include?(score) if right_child_exists?
+    elsif move_left?(score)
+      left_child.include?(score) if left_child_exists?
+    end
+  end
+
   def include?(score)
     if root_exists?
-      if score == root_node.score
-         true
-      elsif move_right?(score)
-        right_child.include?(score) if right_child_exists?
-      elsif move_left?(score)
-        left_child.include?(score) if left_child_exists?
-      end
+      find_in_tree?(score)
     end
   end
   
@@ -93,7 +99,7 @@ class BinarySearchTree
       root_node.title_and_score
     end
   end
-
+  
   def sort
     sorted_movies = []
     sorted_movies << root_node.title_and_score
@@ -202,31 +208,36 @@ class BinarySearchTree
   def leaves
     number_of_leaves = 0
 
-    if left_child_exists? && right_child_exists?
-      number_of_leaves += left_child.leaves + right_child.leaves
+    number_of_leaves += left_leaves
+    number_of_leaves += right_leaves
 
-    elsif !left_child_exists? && !right_child_exists?
+    if !left_child_exists? && !right_child_exists?
       number_of_leaves += 1
-
-    elsif !right_child_exists?
-      number_of_leaves += left_child.leaves
-
-    elsif !left_child_exists?
-      number_of_leaves += right_child.leaves
     end
 
     number_of_leaves
   end
 
+  def left_leaves
+    if left_child_exists?
+      left_child.leaves
+    else 0
+    end
+  end
+
+
+  def right_leaves
+    if right_child_exists?
+      right_child.leaves
+    else 0
+    end
+  end
+  
   def height
     height = 1
+    
     if right_child_exists? && left_child_exists?
-      
-      if right_child.height > left_child.height
-        height += right_child.height
-      else
-        height += left_child.height
-      end
+      height += height_of_bigger_branch
 
     elsif right_child_exists?
       height += right_child.height
@@ -234,8 +245,15 @@ class BinarySearchTree
     elsif left_child_exists?
       height += left_child.height
     end
-
     height
+  end
+
+  def height_of_bigger_branch
+    if right_child.height > left_child.height
+      right_child.height
+    else
+      left_child.height
+    end
   end
 
   def insert_tree(tree)
@@ -247,25 +265,30 @@ class BinarySearchTree
   end
 
   def delete(score)
-    if root_node.score == score
-      @root_node = nil
-
-      if right_child_exists?
-        temp_right_child = right_child
-        @right_child = nil
-        insert_tree(temp_right_child)
-      end
-      if left_child_exists?
-        temp_left_child = left_child
-        @left_child = nil
-        insert_tree(temp_left_child)
-      end
-      
-    elsif move_right?(score)
+    if move_right?(score)
       right_child.delete(score)
-
     elsif move_left?(score)
       left_child.delete(score)
+    elsif root_node.score == score
+      @root_node = nil
+      reinsert_right_tree
+      reinsert_left_tree
+    end
+  end
+
+  def reinsert_right_tree
+    if right_child_exists?
+      temp_right_child = right_child
+      @right_child = nil
+      insert_tree(temp_right_child)
+    end
+  end
+
+  def reinsert_left_tree
+    if left_child_exists?
+      temp_left_child = left_child
+      @left_child = nil
+      insert_tree(temp_left_child)
     end
   end
 

@@ -2,7 +2,6 @@ require_relative '../lib/node'
 require_relative '../lib/binary_search_tree.rb'
 require "minitest/autorun"
 require "minitest/pride"
-require 'pry'
 
 class BinarySearchTreeTest < Minitest::Test
 
