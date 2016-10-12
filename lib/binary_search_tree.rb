@@ -45,11 +45,11 @@ class BinarySearchTree
   end
 
   def insert(score, title)
-    if !root_exists?
-      @root_node = Node.new(score, title)
-    else 
+    if root_exists?
       insert_right(score, title) if move_right?(score)
       insert_left(score, title) if move_left?(score)
+    else
+      @root_node = Node.new(score, title)
     end
     depth_of(score)
   end
@@ -97,10 +97,8 @@ class BinarySearchTree
   def sort
     sorted_movies = []
     sorted_movies << root_node.title_and_score
-  
     sorted_movies.unshift left_child.sort if left_child_exists?
     sorted_movies << right_child.sort if right_child_exists?
-         
     sorted_movies.flatten
   end
 
@@ -193,9 +191,7 @@ class BinarySearchTree
     number_of_leaves = 0
     number_of_leaves += left_leaves
     number_of_leaves += right_leaves
-    if !left_child_exists? && !right_child_exists?
-      number_of_leaves += 1
-    end
+    number_of_leaves += 1 unless left_child_exists? || right_child_exists?
     number_of_leaves
   end
 
@@ -234,11 +230,9 @@ class BinarySearchTree
   end
 
   def insert_tree(tree)
-    if tree.root_exists?
-      insert(tree.root_node.score , tree.root_node.title)
-      insert_tree(tree.right_child) if tree.right_child_exists?
-      insert_tree(tree.left_child) if tree.left_child_exists?
-    end
+    insert(tree.root_node.score , tree.root_node.title)
+    insert_tree(tree.right_child) if tree.right_child_exists?
+    insert_tree(tree.left_child) if tree.left_child_exists?
   end
 
   def delete_node(score)

@@ -13,14 +13,12 @@ class BinarySearchTreeTest < Minitest::Test
   def test_it_inserts_one_node_with_correct_class
     tree = BinarySearchTree.new
     tree.insert(61, "Bill & Ted's Excellent Adventure")
-
     assert_equal Node, tree.root_node.class
   end
 
   def test_it_inserts_one_node_and_returns_depth
     tree = BinarySearchTree.new
     result = tree.insert(61, "Bill & Ted's Excellent Adventure")
-
     assert_equal 0, result
   end
 
@@ -77,7 +75,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(92, "Sharknado 3")
     tree.insert(50, "The Departed")
     tree.insert(41, "The Revenant")
-
     refute tree.include?(22)
   end
 
@@ -94,7 +91,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(92, "Sharknado 3")
     tree.insert(50, "The Departed")
     tree.insert(41, "The Revenant")
-
     assert_equal 1, tree.depth_of(16)
   end
 
@@ -134,7 +130,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(99, "Alien vs. Predator")
     tree.insert(97, "Meru")
     tree.insert(0, "Nacho Libre")
-
     assert_equal({"Alien vs. Predator" => 99}, tree.max)
   end
 
@@ -154,7 +149,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(99, "Alien vs. Predator")
     tree.insert(97, "Meru")
     tree.insert(0, "Nacho Libre")
-
     assert_equal({"Nacho Libre" => 0}, tree.min)
   end
 
@@ -190,7 +184,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(99, "Alien vs. Predator")
     tree.insert(97, "Meru")
     tree.insert(0, "Nacho Libre")
-
     assert_equal 8, tree.node_count
   end
 
@@ -198,7 +191,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree = BinarySearchTree.new
     tree.insert(98, "Animals United")
     assert_equal([[98, 1, 100]], tree.health(0))
-
  end
  
  def test_it_returns_health_with_multiple_movies_at_depth_0
@@ -210,7 +202,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(86, "Charlie's Angels")
     tree.insert(38, "Charlie's Country")
     tree.insert(69, "Collateral Damage")
-
     assert_equal([[98, 7, 100]], tree.health(0))
   end
 
@@ -223,7 +214,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(86, "Charlie's Angels")
     tree.insert(38, "Charlie's Country")
     tree.insert(69, "Collateral Damage")
-
     assert_equal([[58, 6, 85]], tree.health(1))
   end
 
@@ -236,7 +226,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(86, "Charlie's Angels")
     tree.insert(38, "Charlie's Country")
     tree.insert(69, "Collateral Damage")
-
     assert_equal([[36, 2, 28], [93, 3, 42]], tree.health(2))
   end
 
@@ -266,7 +255,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(99, "Alien vs. Predator")
     tree.insert(97, "Meru")
     tree.insert(0, "Nacho Libre")
-
     assert_equal 3, tree.leaves
   end
 
@@ -287,7 +275,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(97, "Meru")
     tree.insert(0, "Nacho Libre")
     tree.insert(30, "The Imitation Game")
-
     assert_equal 5, tree.height
   end
 
@@ -341,7 +328,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree = BinarySearchTree.new
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     tree.delete(61)
-
     refute tree.include?(61)
   end
 
@@ -350,7 +336,6 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     tree.insert(16, "Johnny English")
     tree.delete(16)
-
     refute tree.include?(16)
   end
 
@@ -359,18 +344,15 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     tree.insert(16, "Johnny English")
     tree.delete(16)
-
     refute tree.include?(16)
     assert tree.include?(61)
   end
 
   def test_it_deletes_a_root_node_when_there_are_two_nodes_but_keeps_child
-
     tree = BinarySearchTree.new
     tree.insert(61, "Bill & Ted's Excellent Adventure")
     tree.insert(16, "Johnny English")
     tree.delete(61)
-
     assert tree.include?(16)
     refute tree.include?(61)
   end
@@ -380,9 +362,7 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(41, "The Revenant")
     tree.insert(99, "Alien vs. Predator")
     tree.insert(97, "Meru")
-
     tree.delete(97)
-
     assert tree.include?(99)
     refute tree.include?(97)
   end
