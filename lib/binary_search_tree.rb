@@ -105,7 +105,8 @@ class BinarySearchTree
   def set_node_counter
     if root_exists? 
       1
-    else 0
+    else 
+      0
     end
   end
 
@@ -161,15 +162,23 @@ class BinarySearchTree
     tree_health.each_slice(3).to_a
   end
 
+  def digits_before_comma
+    /(\d+),/i
+  end
+
   def get_scores(lines)
     lines.map do |line|
-      line.scan(/(\d+),/i)[0][0].to_i
+      line.scan(digits_before_comma)[0][0].to_i
     end
+  end
+
+  def words_after_comma
+    /,\s(.+)/i
   end
 
   def get_titles(lines)
     lines.map do |line|
-      line.scan(/,\s(.+)/i)[0]
+      line.scan(words_after_comma)[0]
     end
   end
 
@@ -198,14 +207,16 @@ class BinarySearchTree
   def left_leaves
     if left_child_exists?
       left_child.leaves
-    else 0
+    else
+      0
     end
   end
 
   def right_leaves
     if right_child_exists?
       right_child.leaves
-    else 0
+    else
+      0
     end
   end
   
